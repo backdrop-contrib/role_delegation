@@ -58,7 +58,6 @@ function role_delegation_menu($may_cache) {
             break;
           }
         }
-        $delegation_access |= user_access('administer access control');
       }
 
       $items[] = array(
