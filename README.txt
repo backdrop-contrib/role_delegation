@@ -33,8 +33,9 @@ Installation
    'assign X role' permission. Grant this permission to roles that shall have
    the power to assign role X to users.
 
-If a user has at least one 'assign role' permission, a 'roles' tab appears when
-visiting any user's profile page. Roles can be assigned from that tabbed page.
+If a user has the 'access user profiles' permission and at least one of
+role_delegation's 'assign role' permissions, a 'roles' tab appears when visiting
+any user's profile page. Roles can be assigned from that tabbed page.
 
 
 Credits
