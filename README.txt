@@ -37,9 +37,3 @@ If a user has the 'access user profiles' permission and at least one of
 role_delegation's 'assign role' permissions, a 'roles' tab appears when visiting
 any user's profile page. Roles can be assigned from that tabbed page.
 
-
-Credits
-*******
-
-* Developed by David Lesieur (http://davidlesieur.com,
-  http://drupal.org/user/17157) for Bluesponge (http://bluesponge.com).
