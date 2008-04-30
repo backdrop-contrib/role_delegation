@@ -29,7 +29,7 @@ function role_delegation_perm() {
   $roles = _role_delegation_roles();
   $perms = array();
   foreach ($roles as $role) {
-    $perms[] = 'assign '. check_plain($role) .' role';
+    $perms[] = _role_delegation_make_perm($role);
   }
   return $perms;
 }
@@ -87,7 +87,7 @@ function role_delegation_roles_form($account) {
   // Provide a separate checkbox for each role but hide those the user has no authority over.
   $roles = _role_delegation_roles();
   foreach ($roles as $rid => $role) {
-    if (!user_access('assign '. check_plain($role) .' role') && !user_access('administer access control')) {
+    if (!user_access(_role_delegation_make_perm($role)) && !user_access('administer access control')) {
       // Hide roles the user can't assign.
       $form['roles'][$rid] = array(
         '#type' => 'value',
@@ -134,4 +134,14 @@ function _role_delegation_roles() {
   $roles = user_roles(TRUE);
   unset($roles[DRUPAL_AUTHENTICATED_RID]);
   return $roles;
+}
+
+/**
+ * Returns the delegation permission for a role. Any characters from the role
+ * that are not allowed in permission names are filtered out.
+ */
+function _role_delegation_make_perm($role) {
+  // Allow alphanumerics, space, hyphen, underscore.
+  $role = preg_replace('/[^a-zA-Z0-9 \\-_]/', '', $role);
+  return 'assign '. check_plain($role) .' role';
 }
