@@ -124,6 +124,9 @@ function role_delegation_roles_form_submit($form_id, $form_values) {
     foreach (array_keys(array_filter($form_values['roles'])) as $rid) {
       db_query('INSERT INTO {users_roles} (uid, rid) VALUES (%d, %d)', $form_values['account']->uid, $rid);
     }
+
+    // Delete the user's menu cache.
+    cache_clear_all($form_values['account']->uid .':', 'cache_menu', TRUE);
   }
 }
 
