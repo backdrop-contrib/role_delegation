@@ -148,5 +148,5 @@ function _role_delegation_roles() {
 function _role_delegation_make_perm($role) {
   // Allow alphanumerics, space, hyphen, underscore.
   $role = preg_replace('/[^a-zA-Z0-9 \\-_]/', '', $role);
-  return 'assign '. check_plain($role) .' role';
+  return "assign $role role";
 }
