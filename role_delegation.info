@@ -1,3 +1,5 @@
 ; $Id$
 name = "Role Delegation"
 description = "Allows site administrators to grant some roles the authority to assign selected roles to users."
+core = "6.x"
+
