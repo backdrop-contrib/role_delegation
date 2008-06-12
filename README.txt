@@ -17,7 +17,12 @@ without needing access to the user edit form.
 See also
 ********
 
-RoleAssign (http://drupal.org/project/roleassign).
+RoleAssign (http://drupal.org/project/roleassign): Adds a new 'assign roles'
+permission to allow assignment of roles by authorized users, without having to
+grant them the 'administer access control' permission. Unlike Role Delegation,
+RoleAssign provides no way of selecting what roles can be assigned (anyone with
+the 'assign roles' permission may assign any of the existing roles to other
+users).
 
 
 Installation
