@@ -98,10 +98,13 @@ function role_delegation_roles_form(&$form_state, $account) {
  */
 function role_delegation_roles_form_submit($form, &$form_state) {
   if (is_array($form_state['values']['roles']) && isset($form_state['values']['account']->uid)) {
-    db_query('DELETE FROM {users_roles} WHERE uid = %d', $form_state['values']['account']->uid);
+    $account = user_load(array('uid' => (int)$form_state['values']['account']->uid));
+    $myroles = array();
+    $rolenames = user_roles(TRUE);
     foreach (array_keys(array_filter($form_state['values']['roles'])) as $rid) {
-      db_query('INSERT INTO {users_roles} (uid, rid) VALUES (%d, %d)', $form_state['values']['account']->uid, $rid);
+      $myroles[$rid] = $rolenames[$rid]; 
     }
+    user_save($account, array('roles' => $myroles));
 
     // Delete the user's menu cache.
     cache_clear_all($form_state['values']['account']->uid .':', 'cache_menu', TRUE);
