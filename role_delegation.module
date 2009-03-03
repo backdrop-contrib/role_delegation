@@ -27,7 +27,7 @@ function role_delegation_help($section) {
  */
 function role_delegation_perm() {
   $roles = _role_delegation_roles();
-  $perms = array();
+  $perms = array('assign all roles');
   foreach ($roles as $role) {
     $perms[] = _role_delegation_make_perm($role);
   }
@@ -65,7 +65,7 @@ function role_delegation_roles_form(&$form_state, $account) {
   // Provide a separate checkbox for each role but hide those the user has no authority over.
   $roles = _role_delegation_roles();
   foreach ($roles as $rid => $role) {
-    if (!user_access(_role_delegation_make_perm($role)) && !user_access('administer permissions')) {
+    if (!(user_access('assign all roles') || user_access(_role_delegation_make_perm($role)) || user_access('administer permissions'))) {
       // Hide roles the user can't assign.
       $form['roles'][$rid] = array(
         '#type' => 'value',
