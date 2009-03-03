@@ -31,3 +31,7 @@ If a user has the 'access user profiles' permission and at least one of
 role_delegation's 'assign role' permissions, a 'roles' tab appears when visiting
 any user's profile page. Roles can be assigned from that tabbed page.
 
+Role Delegation also adds an 'assign all roles' permission. Enabling this
+permission for a role is a convenient way to allow it to assign any other role
+without having to check all the 'assign X role' permissions in the Permissions
+page.
