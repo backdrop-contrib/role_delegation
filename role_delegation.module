@@ -126,7 +126,7 @@ function role_delegation_access($account) {
     return FALSE;
   }
   // Check if they can use the Edit tab instead.
-  if (user_access('administer users')) {
+  if (user_access('administer users') || $GLOBALS['user']->uid == $account->uid) {
     return FALSE;
   }
   // Check access to role assignment page.
