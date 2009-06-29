@@ -10,12 +10,6 @@ This module allows site administrators to grant some roles the authority to
 assign selected roles to users, without them needing the 'administer
 permissions' permission.
 
-If an administrator has the 'administer users' permission, a role assignment
-widget gets displayed in the account editing form. Otherwise, if he has at least
-the 'access user profiles' permission, the module adds its own 'Roles' tab to
-the user profile so that roles can be assigned without needing access to the
-account editing form.
-
 For each role, Role Delegation provides a new 'assign <ROLE> role' permission to
 allow the assignment of that role.
 
@@ -23,6 +17,11 @@ The module also adds an 'assign all roles' permission. Enabling this permission
 for a role is a convenient way to allow the assignment of any other role without
 having to check all the 'assign <ROLE> role' permissions in the Permissions
 page.
+
+If an administrator has the 'administer users' permission, a role assignment
+widget gets displayed in the account creation or editing form. Otherwise, if he
+has at least the 'access user profiles' permission, the module adds its own
+'Roles' tab to the user profile so that roles can be assigned.
 
 
 Installation
