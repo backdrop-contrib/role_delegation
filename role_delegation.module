@@ -42,7 +42,7 @@ function role_delegation_menu() {
   $items = array();
   
   $items['user/%user/roles'] = array(
-    'title' => t('Roles'),
+    'title' => 'Roles',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('role_delegation_roles_form', 1),
     'access callback' => 'role_delegation_access',
