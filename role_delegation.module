@@ -194,6 +194,10 @@ function role_delegation_form_alter(&$form, $form_state, $form_id) {
       }
     }
   }
+  if (empty($roles_options)) {
+    // No role can be assigned.
+    return; 
+  }
   // Generate the form items.
   $form['roles_preserve'] = array(
     '#type' => 'value',
