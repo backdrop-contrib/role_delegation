@@ -45,7 +45,7 @@ function role_delegation_permission() {
     'description' => drupal_placeholder(array('text' => t('Warning: Give to trusted roles only; this permission has security implications.'))),
   );
   foreach ($roles as $rid => $role) {
-    $perms[_role_delegation_make_perm($role)] = array(
+    $perms["assign $role role"] = array(
       'title' => t('Assign %role role', array('%role' => $role)),
     );
   }
@@ -76,7 +76,7 @@ function _role_delegation_add_roles_to_form(&$form, $account) {
   $roles_delegate = array();
   $roles = _role_delegation_roles();
   foreach ($roles as $rid => $role) {
-    if (user_access('assign all roles') || user_access(_role_delegation_make_perm($role))) {
+    if (user_access('assign all roles') || user_access("assign $role role")) {
       $roles_delegate[$rid] = $role;
     }
   }
@@ -179,16 +179,6 @@ function _role_delegation_roles() {
   // privilege to users with 'Administer permissions' permission only.
   unset($roles[variable_get('user_admin_role', 0)]);
   return $roles;
-}
-
-/**
- * Returns the delegation permission for a role. Any characters from the role
- * that are not allowed in permission names are filtered out.
- */
-function _role_delegation_make_perm($role) {
-  // Allow alphanumerics, space, hyphen, underscore.
-  $role = preg_replace('/[^a-zA-Z0-9 \\-_]/', '', $role);
-  return "assign $role role";
 }
 
 /**
