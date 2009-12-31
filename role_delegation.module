@@ -42,7 +42,7 @@ function role_delegation_permission() {
   $roles = _role_delegation_roles();
   $perms['assign all roles'] = array(
     'title' => t('Assign all roles'),
-    'description' => theme('placeholder', array('text' => t('Warning: Give to trusted roles only; this permission has security implications.'))),
+    'description' => drupal_placeholder(array('text' => t('Warning: Give to trusted roles only; this permission has security implications.'))),
   );
   foreach ($roles as $rid => $role) {
     $perms[_role_delegation_make_perm($role)] = array(
@@ -76,7 +76,7 @@ function _role_delegation_add_roles_to_form(&$form, $account) {
   $roles_delegate = array();
   $roles = _role_delegation_roles();
   foreach ($roles as $rid => $role) {
-   if (user_access('assign all roles') || user_access(_role_delegation_make_perm($role))) {
+    if (user_access('assign all roles') || user_access(_role_delegation_make_perm($role))) {
       $roles_delegate[$rid] = $role;
     }
   }
@@ -100,14 +100,7 @@ function _role_delegation_add_roles_to_form(&$form, $account) {
     '#options' => $roles_delegate,
     '#default_value' => array_keys(array_intersect_key($roles_current, $roles_delegate)),
     '#description' => t('Change roles assigned to user.'),
-    //'#weight' => $form['account']['roles']['#weight'],
   );
-  /*$form['account']['roles_change'][DRUPAL_AUTHENTICATED_RID] = array(
-    '#type' => 'checkbox',
-    '#title' => t('authenticated user'),
-    '#default_value' => TRUE,
-    '#disabled' => TRUE,
-  );*/
 }
 
 /**
