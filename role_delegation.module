@@ -61,7 +61,6 @@ function role_delegation_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('role_delegation_roles_form', 1),
     'access callback' => 'role_delegation_access',
-    'access arguments' => array(1),
     'type' => MENU_LOCAL_ACTION,
   );
   return $items;
@@ -146,13 +145,13 @@ function role_delegation_save($uids, $roles_change) {
 /**
  * Access callback for menu hook.
  */
-function role_delegation_access($account) {
+function role_delegation_access() {
   // Check access to user profile page.
-  if (!user_view_access($account)) {
+  if (!user_access('access user profiles')) {
     return FALSE;
   }
-  // Check if they can use the Edit tab instead.
-  if (user_edit_access($account)) {
+  // Check if they can edit users. In that case, the Roles tab is not needed.
+  if (user_access('administer users')) {
     return FALSE;
   }
   // Check access to role assignment page.
