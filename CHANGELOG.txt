@@ -2,7 +2,9 @@ $Id$
 
 Role Delegation 7.x-1.0, 201x-xx-xx
 -----------------------------------
+#170543 by Andrew Schulman: Rename or delete 'assign role' permissions when roles are renamed or deleted.
 #811932 by Pasqualle: Use 'restrict access' parameter for labeling unsafe permissions.
+Fix wrong assertion in RoleDelegationRoleEditingTestCase::testRenameRole() in role_delegation.test.
 
 Role Delegation 7.x-1.0-beta1, 2010-12-07
 -----------------------------------------
