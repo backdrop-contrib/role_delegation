@@ -1,5 +1,9 @@
 $Id$
 
+Role Delegation 7.x-1.0, 201x-xx-xx
+-----------------------------------
+#811932 by Pasqualle: Use 'restrict access' parameter for labeling unsafe permissions.
+
 Role Delegation 7.x-1.0-beta1, 2010-12-07
 -----------------------------------------
 #660640 by Pasqualle: Port to D7; add "Delegate roles" action.

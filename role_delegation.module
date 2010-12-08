@@ -42,7 +42,7 @@ function role_delegation_permission() {
   $roles = _role_delegation_roles();
   $perms['assign all roles'] = array(
     'title' => t('Assign all roles'),
-    'description' => drupal_placeholder(t('Warning: Give to trusted roles only; this permission has security implications.')),
+    'restrict access' => TRUE,
   );
   foreach ($roles as $rid => $role) {
     $perms["assign $role role"] = array(
