@@ -200,37 +200,34 @@ function role_delegation_form_alter(&$form, $form_state, $form_id) {
  */
 function role_delegation_form_user_admin_role_alter(&$form, $form_state)
 {
-  // Put our submit function in line ahead of user_admin_role_submit(),
-  // so that it can make use of the old role name before it's changed to the new.
-  array_unshift($form['#submit'], 'role_delegation_form_user_admin_role_submit');
+  $form['#submit'][] = 'role_delegation_form_user_admin_role_submit';
 }
 
 /**
  * Submit function for the user_admin_role form:
- * When a role is renamed, rename the permissions to assign that role.
+ * When a role is renamed, renames the "assign role" permission for that role.
  * We can't use hook_user_role_update() for this, because that's called after the
- * role update has taken place, so the old role name is already lost.
+ * role update has already taken place, so the old role name is no longer available.
  */
 function role_delegation_form_user_admin_role_submit($form, &$form_state) {
   $op = $form_state['values']['op'];
   if ($op != t('Save role')) {
     return;
   }
-  $rid = $form_state['values']['rid'];
-  $oldrole = db_query('SELECT name FROM {role} WHERE rid = :rid', array(':rid' => $rid))->fetchField();
+  $oldrole = $form_state['build_info']['args'][0]->name;
   $newrole = $form_state['values']['name'];
   if ($oldrole == $newrole) {
     return;
   }
   db_update('role_permission')
-  ->fields(array('permission' => "assign $newrole role"))
   ->condition('permission', "assign $oldrole role")
+  ->fields(array('permission' => "assign $newrole role"))
   ->execute();
 }
 
 /**
  * Implements hook_user_role_delete().
- * When a role is deleted, delete the permissions to assign that role.
+ * When a role is deleted, deletes the "assign role" permission for that role.
  */
 function role_delegation_user_role_delete($role) {
   db_delete('role_permission')
@@ -295,8 +292,8 @@ function role_delegation_user_operations($form = array(), $form_state = array())
 /**
  * Implements hook_form_FORM_ID_alter() for user_admin_account().
  * 
- * In the user bulk update form, separate out the role delegation operations
- * and group and relabel them under 'Add a role' and 'Remove a role' optgroups.
+ * In the user bulk update form, separates out the role delegation operations
+ * and groups and relabels them under 'Add a role' and 'Remove a role' optgroups.
  */
 function role_delegation_form_user_admin_account_alter(&$form, $form_state, $form_id) {
   $options = $form['options']['operation']['#options'];
