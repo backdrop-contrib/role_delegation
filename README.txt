@@ -19,9 +19,11 @@ having to check all the 'assign <ROLE> role' permissions in the Permissions
 page.
 
 If an administrator has the 'administer users' permission, a role assignment
-widget gets displayed in the account creation or editing form. Otherwise, if he
-has at least the 'access user profiles' permission, the module adds its own
-'Roles' tab to the user profile so that roles can be assigned.
+widget gets displayed in the account creation or editing form, and bulk
+add/remove role operations become available on the user administration page.
+Otherwise, if s/he has at least the 'access user profiles' permission, the
+module adds its own 'Roles' tab to the user profile so that roles can be
+assigned.
 
 
 Installation

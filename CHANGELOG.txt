@@ -1,6 +1,6 @@
 $Id$
 
-Role Delegation 7.x-1.0, 201x-xx-xx
+Role Delegation 7.x-1.0, 2010-12-21
 -----------------------------------
 #170543 by Andrew Schulman: Rename or delete 'assign role' permissions when roles are renamed or deleted.
 #811932 by Pasqualle: Use 'restrict access' parameter for labeling unsafe permissions.
