@@ -1,4 +1,3 @@
-$Id$
 
 README file for the Role Delegation Drupal module.
 
