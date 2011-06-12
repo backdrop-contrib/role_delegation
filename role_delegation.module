@@ -183,15 +183,16 @@ function _role_delegation_roles() {
  * Implements hook_form_alter().
  */
 function role_delegation_form_alter(&$form, $form_state, $form_id) {
-  if (!in_array($form_id, array('user_register_form', 'user_profile_form'))) {
+  // Only add role delegation options to:
+  // * Registration tab of account registration form
+  // * Account editing tab of account editing form
+  // These are normally the only tabs present on those forms, but other tabs may be added
+  // by other modules, e.g. profile editing forms by Profile 2.
+  if (!(   ($form_id == 'user_register_form' && $form['#user_category'] == 'register')
+        || ($form_id == 'user_profile_form'  && $form['#user_category'] == 'account') )) {
     return;
   }
   if (user_access('administer permissions')) {
-    return;
-  }
-  // In the user profile form, only add role delegation options to the 'account' tab.
-  // I.e. don't add it to profile editing tabs provided by Profile 2.
-  if ($form_id == 'user_profile_form' && $form['#user_category'] != 'account') {
     return;
   }
 
