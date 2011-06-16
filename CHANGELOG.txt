@@ -1,3 +1,8 @@
+Role Delegation 7.x-1.1, 2011-xx-xx
+-----------------------------------
+#1119192 by Andrew Schulman: fix Role Delegation tab in user profile appears as an action, not a tab
+#1180600 by jyee: fix overwrites role attributes in forms
+#1185796 by Andrew Schulman: fix Role delegation options appear in every profile edit form with Profile 2
 
 Role Delegation 7.x-1.0, 2010-12-21
 -----------------------------------

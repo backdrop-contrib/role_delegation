@@ -94,10 +94,10 @@ function _role_delegation_add_roles_to_form(&$form, $account) {
   // Generate the form items.
   $form['account']['roles_change'] = array(
     '#type' => 'checkboxes',
-    '#title' => (isset($form['account']['roles']['#title']))? $form['account']['roles']['#title'] : t('Roles'),
+    '#title' => isset($form['account']['roles']['#title']) ? $form['account']['roles']['#title'] : t('Roles'),
     '#options' => $roles_delegate,
     '#default_value' => array_keys(array_intersect_key($roles_current, $roles_delegate)),
-    '#description' => (isset($form['account']['roles']['#description']))? $form['account']['roles']['#description'] : t('Change roles assigned to user.'),
+    '#description' => isset($form['account']['roles']['#description']) ? $form['account']['roles']['#description'] : t('Change roles assigned to user.'),
   );
 }
 
