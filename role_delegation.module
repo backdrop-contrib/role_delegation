@@ -187,9 +187,9 @@ function role_delegation_form_alter(&$form, $form_state, $form_id) {
   // * Registration tab of account registration form
   // * Account editing tab of account editing form
   // These are normally the only tabs present on those forms, but other tabs may be added
-  // by other modules, e.g. profile editing forms by Profile 2.
+  // by other modules, e.g. profile editing tabs by Profile 2.
   if (!(   ($form_id == 'user_register_form' && $form['#user_category'] == 'register')
-        || ($form_id == 'user_profile_form'  && $form['#user_category'] == 'account') )) {
+        || ($form_id == 'user_profile_form'  && $form['#user_category'] == 'account' ) )) {
     return;
   }
   if (user_access('administer permissions')) {
@@ -203,8 +203,7 @@ function role_delegation_form_alter(&$form, $form_state, $form_id) {
 /**
  * Implements hook_form_FORM_ID_alter() for user_admin_role().
  */
-function role_delegation_form_user_admin_role_alter(&$form, $form_state)
-{
+function role_delegation_form_user_admin_role_alter(&$form, $form_state) {
   $form['#submit'][] = 'role_delegation_form_user_admin_role_submit';
 }
 
