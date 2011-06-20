@@ -347,7 +347,7 @@ function role_delegation_delegate_roles_action_form($context) {
   foreach (_role_delegation_roles() as $rid => $role_name) {
     $form['role_change'][$rid] = array(
       '#type' => 'select',
-      '#title' => $role_name,
+      '#title' => check_plain($role_name),
       '#default_value' => isset($context['roles_change'][$rid]) ? $context['roles_change'][$rid] : -1,
       '#options' => array(
         -1 => t('Do not change'),
