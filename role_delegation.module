@@ -296,6 +296,9 @@ function role_delegation_user_operations($form = array(), $form_state = array())
  * and groups and relabels them under 'Add a role' and 'Remove a role' optgroups.
  */
 function role_delegation_form_user_admin_account_alter(&$form, $form_state, $form_id) {
+  if (!isset($form['options']['operation']['#options'])) {
+    return;
+  }
   $options = $form['options']['operation']['#options'];
   $roles = _role_delegation_roles();
   $add_roles = array();
