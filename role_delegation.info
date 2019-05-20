@@ -3,5 +3,3 @@ description = Allows site administrators to grant some roles the authority to as
 core = 7.x
 files[] = role_delegation.module
 files[] = role_delegation.test
-
-test_dependencies[] = autoassignrole
