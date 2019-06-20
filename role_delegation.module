@@ -240,7 +240,7 @@ function role_delegation_user_role_delete($role) {
  */
 function role_delegation_user_presave(&$edit, $account, $category) {
   if (isset($edit['roles_change'])) {
-    $edit['roles'] = array_filter($edit['roles_change']) + array_filter($edit['roles']);
+    $edit['roles'] = array_filter($edit['roles_change'] + $edit['roles']);
     unset($edit['roles_change']);
   }
 }
