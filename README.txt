@@ -1,9 +1,5 @@
-
-README file for the Role Delegation Drupal module.
-
-
-Description
-***********
+Role Delegation
+===============
 
 This module allows site administrators to grant some roles the authority to
 assign selected roles to users, without them needing the 'administer
@@ -24,17 +20,42 @@ Otherwise, if s/he has at least the 'access user profiles' permission, the
 module adds its own 'Roles' tab to the user profile so that roles can be
 assigned.
 
+Pre-Release Information
+-----------------------
+
+This is a pre-release of the Administer Users by Role module. We are currently seeking testers,
+feedback, and co-maintainers.
+
+All 1.x-0.1.x tags will be used to denote pre-release status. The first
+official release will be numbered 1.x-1.1.0.
 
 Installation
-************
+------------
 
-1. Extract the 'role_delegation' module directory, including all its
-   subdirectories, into your Drupal modules directory.
+- Install this module using the official Backdrop CMS instructions at
+  https://backdropcms.org/guide/modules
 
-2. Go to the Administer > Site building > Modules page, and enable the module.
-
-3. Go to the Administer > User management > Permissions and scroll down to
+- Go to the Administer > User management > Permissions and scroll down to
    the role_delegation group of permissions. Each role now has a corresponding
    'assign <ROLE> role' permission. Grant this permission to roles that shall have
    the power to assign role ROLE to users.
+   
+Issues
+------
+
+Bugs and Feature requests should be reported in the Issue Queue:
+https://github.com/kelizoliva/role_delegation/issues
+
+Current Maintainers
+-------------------
+
+- Kristin Snelling (https://github.com/kelizoliva).
+- Seeking additional maintainers.
+
+Credits
+-------
+
+- Ported to Backdrop CMS by Kristin Snelling (https://github.com/kelizoliva).
+- Maintained for Drupal by Jeroen Tubex (https://www.drupal.org/u/jeroent).
+- Maintained for Drupal by Ben Dougherty (https://www.drupal.org/u/benjy).
 
