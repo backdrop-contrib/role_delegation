@@ -35,7 +35,7 @@ Installation
 - Install this module using the official Backdrop CMS instructions at
   https://backdropcms.org/guide/modules
 
-- Go to the Administer > User management > Permissions and scroll down to
+- Go to the Administer > Configuration > User Accounts > Permissions and scroll down to
    the role_delegation group of permissions. Each role now has a corresponding
    'assign <ROLE> role' permission. Grant this permission to roles that shall have
    the power to assign role ROLE to users.
