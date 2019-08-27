@@ -1,5 +1,5 @@
 name = Role delegation
 description = Allows site administrators to grant some roles the authority to assign selected roles to users.
-core = 7.x
+backdrop = 1.x
 files[] = role_delegation.module
 files[] = role_delegation.test
