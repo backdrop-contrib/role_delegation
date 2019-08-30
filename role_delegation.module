@@ -32,7 +32,7 @@ function role_delegation_theme() {
       'render element' => 'form',
     ),
   );
-};
+}
 
 /**
  * Implements hook_permission().
@@ -57,7 +57,7 @@ function role_delegation_permission() {
 function role_delegation_menu() {
   $items['user/%user/roles'] = array(
     'title' => 'Roles',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('role_delegation_roles_form', 1),
     'access callback' => 'role_delegation_access',
     'type' => MENU_LOCAL_TASK,
@@ -118,12 +118,16 @@ function role_delegation_roles_form($form, $form_state, $account) {
  */
 function role_delegation_roles_form_submit($form, &$form_state) {
   if (is_array($form_state['values']['roles_change']) && isset($form_state['values']['account']->uid)) {
-    $uid = (int)$form_state['values']['account']->uid;
+    $uid = (int) $form_state['values']['account']->uid;
     role_delegation_save(array($uid), $form_state['values']['roles_change']);
-    drupal_set_message(t('The roles have been updated.'));
+    backdrop_set_message(t('The roles have been updated.'));
   }
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function role_delegation_save($uids, $roles_change) {
   $rolenames = user_roles(TRUE);
   foreach ($roles_change as $rid => $value) {
@@ -168,10 +172,10 @@ function role_delegation_access() {
  */
 function _role_delegation_roles() {
   $roles = user_roles(TRUE);
-  unset($roles[DRUPAL_AUTHENTICATED_RID]);
+  unset($roles[BACKDROP_AUTHENTICATED_RID]);
   // Do not allow to delegate users to administator role. Let's keep this
   // privilege to users with 'Administer permissions' permission only.
-  unset($roles[variable_get('user_admin_role', 0)]);
+  unset($roles[config_get('system.performance', 'user_admin_role')]);
   return $roles;
 }
 
@@ -340,6 +344,10 @@ function role_delegation_action_info() {
   );
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function role_delegation_delegate_roles_action_form($context) {
   $form['#tree'] = TRUE;
   $form['#theme'] = 'role_delegation_delegate_roles_action_form';
@@ -358,6 +366,10 @@ function role_delegation_delegate_roles_action_form($context) {
   return $form;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function theme_role_delegation_delegate_roles_action_form($variables) {
   $form = $variables['form'];
 
@@ -369,19 +381,23 @@ function theme_role_delegation_delegate_roles_action_form($variables) {
   foreach (element_children($form['role_change']) as $key) {
     $role = $form['role_change'][$key]['#title'];
     unset($form['role_change'][$key]['#title']);
-    $operation = drupal_render($form['role_change'][$key]);
+    $operation = backdrop_render($form['role_change'][$key]);
     $row = array(
       array('data' => $role),
       array('data' => $operation),
     );
     $rows[] = $row;
   }
-  $output = drupal_render($form['actions_label']);
+  $output = backdrop_render($form['actions_label']);
   $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'role-delegation-table')));
-  $output .= drupal_render_children($form);
+  $output .= backdrop_render_children($form);
   return $output;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function role_delegation_delegate_roles_action_submit($form, $form_state) {
   $roles_change = array();
   foreach ($form_state['values']['role_change'] as $rid => $value) {
@@ -393,8 +409,20 @@ function role_delegation_delegate_roles_action_submit($form, $form_state) {
   return array('roles_change' => $roles_change);
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function role_delegation_delegate_roles_action(&$user, $context) {
   $roles_current = $user->roles;
   $roles_change = $context['roles_change'];
   role_delegation_save(array($user->uid), $roles_change);
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function role_delegation_autoload_info() {
+  return array(
+  );
 }
