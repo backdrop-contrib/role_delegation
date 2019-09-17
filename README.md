@@ -23,8 +23,8 @@ assigned.
 Pre-Release Information
 -----------------------
 
-This is a pre-release of the Administer Users by Role module. We are currently seeking testers,
-feedback, and co-maintainers.
+This is a pre-release of the Administer Users by Role module. We are currently
+seeking testers, feedback, and co-maintainers.
 
 All 1.x-0.1.x tags will be used to denote pre-release status. The first
 official release will be numbered 1.x-1.1.0.
@@ -35,10 +35,10 @@ Installation
 - Install this module using the official Backdrop CMS instructions at
   https://backdropcms.org/guide/modules
 
-- Go to the Administer > Configuration > User Accounts > Permissions and scroll down to
-   the role_delegation group of permissions. Each role now has a corresponding
-   'assign <ROLE> role' permission. Grant this permission to roles that shall have
-   the power to assign role ROLE to users.
+- Go to the Administer > Configuration > User Accounts > Permissions and scroll
+  down to the role_delegation group of permissions. Each role now has a
+  corresponding 'assign <ROLE> role' permission. Grant this permission to roles
+  that shall have the power to assign role ROLE to users.
    
 Issues
 ------
@@ -49,13 +49,13 @@ https://github.com/kelizoliva/role_delegation/issues
 Current Maintainers
 -------------------
 
-- Kristin Snelling (https://github.com/kelizoliva).
+- [Kristin Snelling](https://github.com/kelizoliva).
 - Seeking additional maintainers.
 
 Credits
 -------
 
-- Ported to Backdrop CMS by Kristin Snelling (https://github.com/kelizoliva).
-- Maintained for Drupal by Jeroen Tubex (https://www.drupal.org/u/jeroent).
-- Maintained for Drupal by Ben Dougherty (https://www.drupal.org/u/benjy).
+- Ported to Backdrop CMS by [Kristin Snelling](https://github.com/kelizoliva).
+- Maintained for Drupal by [Jeroen Tubex](https://www.drupal.org/u/jeroent).
+- Maintained for Drupal by [Ben Dougherty](https://www.drupal.org/u/benjy).
 
