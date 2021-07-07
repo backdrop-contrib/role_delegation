@@ -41,7 +41,7 @@ Current Maintainers
 -------------------
 
 - [Kristin Snelling](https://github.com/kelizoliva).
-- [Herb v/d Dool](https://github.com/herbdool).
+- Seeking additional maintainers.
 
 Credits
 -------
