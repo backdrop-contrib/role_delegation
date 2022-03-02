@@ -1,0 +1,337 @@
+<?php
+
+/**
+ * @file
+ * Tests for the Role Delegation module.
+ */
+
+/**
+ * Base class for Role Delegation tests.
+ */
+class RoleDelegationTestCase extends BackdropWebTestCase {
+
+  protected $rid_high, $rid_low, $user_high, $user_low;
+
+  /**
+   * Assign or remove one role to/from one user.
+   *
+   * The logged in user must have the "administer users"
+   * permission in order for this function to succeed.
+   *
+   * @param $rid
+   *   The role id of the role to assign or remove.
+   * @param $user
+   *   The user object of the user to assign/remove the role to.
+   * @param $assign
+   *   TRUE (the default) to assign the role, or
+   *   FALSE to remove it.
+   *
+   * @return
+   *   TRUE or FALSE depending on whether the role was
+   *   successfully assigned or removed.
+   */
+  protected function assignRoleToUser($rid, $user, $assign = TRUE) {
+    $this->backdropGet("user/{$user->uid}/edit");
+    if (count($this->xpath("//input[@name='roles[$rid]']"))) {
+      $name = "roles[$rid]";
+    }
+    elseif (count($this->xpath("//input[@name='roles_change[$rid]']"))) {
+      $name = "roles_change[$rid]";
+    }
+    else {
+      return FALSE;
+    }
+    $this->backdropPost("user/{$user->uid}/edit", array($name => $assign), t('Save'));
+
+    $this->backdropGet("user/{$user->uid}/edit");
+    $elements = $this->xpath("//input[@name='$name']");
+    return isset($elements[0]) && ($assign XOR empty($elements[0]['checked']));
+  }
+
+  /**
+   * Assign or remove one permission to/from one role, and assert
+   * that the result succeeded.
+   *
+   * @param $permission
+   *   The name of the permission to assign or remove.
+   * @param $rid
+   *   The role id of the role to assign/remove the permission to/from.
+   * @param $assign
+   *   TRUE (the default) to assign the permission, or
+   *   FALSE to remove it.
+   *
+   * @return
+   *   TRUE or FALSE depending on whether the permission was
+   *   successfully assigned or removed.
+   */
+  protected function assignPermissionToRole($permission, $rid, $assign = TRUE) {
+    $name = "{$rid}[{$permission}]";
+    $this->backdropPost("admin/config/people/permissions/$rid", array($name => $assign), t('Save permissions'));
+    $elements = $this->xpath("//input[@name='$name']");
+    $this->assertTrue(
+      isset($elements[0]) && ($assign XOR empty($elements[0]['checked'])),
+      ($assign ? 'Assign' : 'Remove') . ' permission "' . $permission . '" ' . ($assign ? 'to' : 'from') . " role $rid."
+    );
+  }
+
+  public function setUp(array $modules = array('role_delegation')) {
+
+    // Enable modules
+    parent::setUp($modules);
+
+    // Create roles
+    $this->rid_high = $this->backdropCreateRole(array(), 'high');
+    $this->rid_low  = $this->backdropCreateRole(array(), 'low' );
+
+    // Create users
+    $this->user_high = $this->backdropCreateUser(array('administer users', 'access user profiles'));
+    $this->user_low  = $this->backdropCreateUser(array('administer users'));
+
+    // Create privileged user and log in
+    $this->backdropLogin($this->backdropCreateUser(array('administer users', 'administer permissions', 'access user profiles', 'assign roles')));
+
+    // Assign permissions to roles
+    $this->assignPermissionToRole('assign low role', $this->rid_high);  // 'high' can assign 'low'
+
+    // Assign roles to users
+    $this->assertTrue(
+      $this->assignRoleToUser($this->rid_high, $this->user_high),
+      'Assign high role to high user'
+    );
+  }
+}
+
+/**
+ * Functional tests for permissions.
+ */
+class RoleDelegationPermissionsTestCase extends RoleDelegationTestCase {
+
+  /**
+   * Check that high role can assign low role.
+   */
+  public function testHighLow() {
+    $this->backdropLogin($this->user_high);
+    $this->assertTrue(
+      $this->assignRoleToUser($this->rid_low, $this->user_low),  // could be any user
+      t('!role1 role can assign !role2 role.', array('!role1' => 'High', '!role2' => 'low')),
+      t('Role Delegation')
+    );
+  }
+
+  /**
+   * Check that high role can't assign high role.
+   */
+  public function testHighHigh() {
+    $this->backdropLogin($this->user_high);
+    // Just check that no option is presented to the user.
+    $this->assertFalse(
+      $this->assignRoleToUser($this->rid_high, $this->user_high),  // could be any user
+      t("!role1 role can't assign !role2 role.", array('!role1' => 'High', '!role2' => 'high')),
+      t('Role Delegation')
+    );
+  }
+
+  /**
+   * Check that roles can't be assigned by forgery.
+   */
+  public function testRoleForgery() {
+    $this->backdropLogin($this->user_high);
+
+    // Have the nefarious high user forge an option to assign the high role...
+    $this->backdropGet("user/{$this->user_low->uid}/roles");
+    $name = "roles_change[{$this->rid_low}]";
+    $input = $this->xpath("//input[@name='$name']");
+    $dome = dom_import_simplexml($input[0]);
+    $dome->setAttribute('value', $this->rid_high);
+
+    // ... then submit the form, and check that he didn't get the role.
+    $this->backdropPost(NULL, array($name => TRUE), t('Save'));
+    $this->assertText(
+      t('Invalid option high in Roles element.'),
+      t('Role assignment forgery is blocked.') . ' (#1)',
+      t('Role Delegation')
+    );
+    $this->assertFieldByName(
+      $name,
+      $this->rid_low,
+      t('Role assignment forgery is blocked.') . ' (#2)',
+      t('Role Delegation')
+    );
+  }
+
+  /**
+   * Check access to the role delegation page.
+   */
+  public function testRoleDelegationPageAccess() {
+    // Users with 'administer permissions' can view the page.
+    $this->backdropGet("user/{$this->user_low->uid}/roles");
+    $this->assertResponse(200, t('Users with \'administer permissions\' can view the page.'));
+
+    // Anonymous users can never access the roles page.
+    $this->backdropLogout();
+    $this->backdropGet("user/{$this->user_low->uid}/roles");
+    $this->assertResponse(403, t('Anonymous users can never access the roles page.'));
+
+    // Users with only 'administer users' cannot view the page.
+    $this->backdropLogin($this->backdropCreateUser(array('administer users')));
+    $this->backdropGet("user/{$this->user_low->uid}/roles");
+    $this->assertResponse(403, t('Users with only \'administer users\' cannot view the page.'));
+
+    $this->backdropLogout();
+    $this->backdropLogin($this->user_high);
+    $this->backdropGet("user/{$this->user_low->uid}/roles");
+    $this->assertResponse(200, t('Users with assign role permissions should be able to access the page.'));
+
+    $this->backdropLogout();
+    $this->backdropLogin($this->user_low);
+    $this->backdropGet("user/{$this->user_low->uid}/roles");
+    $this->assertResponse(403, t('Users without assign role permissions should not be able to access the page.'));
+  }
+
+}
+
+/**
+ * Functional tests for operations.
+ */
+class RoleDelegationOperationsTestCase extends RoleDelegationTestCase {
+
+  /**
+   * Check that the right combination of Add and Remove role
+   * operations is present in the user bulk update form.
+   */
+  public function testOperationsExist() {
+
+    $this->backdropLogin($this->user_high);
+    $this->backdropGet('admin/people');
+
+    $this->assertFieldByXPath(
+      '//select[@name="action"]//option',
+      "role_delegation_add_role_{$this->rid_low}",
+      t("!user user can use Add !role role operation.", array('!user' => 'High', '!role' => 'low')),
+      t('Role Delegation')
+    );
+    $this->assertFieldByXPath(
+      '//select[@name="action"]//option',
+      "role_delegation_remove_role_{$this->rid_low}",
+      t("!user user can use Remove !role role operation.", array('!user' => 'High', '!role' => 'low')),
+      t('Role Delegation')
+    );
+    $this->assertNoFieldByXPath(
+      '//select[@name="action"]//option',
+      "role_delegation_add_role_{$this->rid_high}",
+      t("!user user can't use Add !role role operation.", array('!user' => 'High', '!role' => 'high')),
+      t('Role Delegation')
+    );
+    $this->assertNoFieldByXPath(
+      '//select[@name="action"]//option',
+      "role_delegation_remove_role_{$this->rid_high}",
+      t("!user user can't use Remove !role role operation.", array('!user' => 'High', '!role' => 'high')),
+      t('Role Delegation')
+    );
+  }
+
+  /**
+   * Check that Add and Remove role operations work as intended.
+   */
+  public function testOperationsWork() {
+    $this->backdropLogin($this->user_high);
+
+    $users_to_test = array($this->user_high, $this->user_low);
+    $edit = array();
+    foreach ($users_to_test as $user) {
+      $this->backdropGet('admin/people/list', array('query' => array(
+        'status' => 'All',
+        'role' => 'All',
+        'username' => $user->name,
+      )));
+      // Add low role
+      $edit = array(
+        'action' => "role_delegation_add_role_{$this->rid_low}",
+        'bulk_form[0]' => TRUE,
+      );
+      $this->backdropPost(NULL, $edit, t('Execute'));
+
+      $this->assertFieldByXPath(
+        "//tbody/tr[1]/td[4]//li",
+        'low',
+        t('!user user assigned !role role to user !uid.',  array('!user' => 'High', '!role' => 'low', '!uid' => $user->uid)),
+        t('Role Delegation')
+      );
+
+      // Remove low role
+      $edit = array(
+        'action' => "role_delegation_remove_role_{$this->rid_low}",
+        'bulk_form[0]' => TRUE,
+      );
+      $this->backdropPost(NULL, $edit, t('Execute'));
+
+      $this->assertNoFieldByXPath(
+        "//tbody/tr[1]/td[4]//li",
+        'low',
+        t('!user user removed !role role from user !uid.', array('!user' => 'High', '!role' => 'low', '!uid' => $user->uid)),
+        t('Role Delegation')
+      );
+    }
+  }
+
+  /**
+   * Check that operations can't be forged.
+   */
+  public function testOperationsForgery() {
+    $this->backdropLogin($this->user_high);
+    $this->backdropGet('admin/people/list', array('query' => array(
+      'status' => 'All',
+      'role' => 'All',
+      'username' => $this->user_low->name,
+    )));
+
+    // Forge an operation to add the high role...
+    $option = $this->xpath("//select[@name='action']//option[@value='role_delegation_add_role_{$this->rid_low}']");
+    if (count($option)==0) {
+      return;
+    }
+    $dome = dom_import_simplexml($option[0]);
+    $dome->setAttribute('value', "role_delegation_add_role_{$this->rid_high}");
+
+    // ... then submit the form, and check that it wasn't granted.
+    $edit = array(
+      "action" => "role_delegation_add_role_{$this->rid_high}",
+      'bulk_form[0]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Execute'));
+    $this->assertText(
+      t('Invalid option role_delegation_add_role_high in Action element.'),
+      t('Role assignment forgery is blocked.') . ' (#1)',
+      t('Role Delegation')
+    );
+    $this->assertNoFieldByXPath(
+      "//tbody/tr[1]/td[4]//li",
+      'high',
+      t('Role assignment forgery is blocked.') . ' (#2)',
+      t('Role Delegation')
+    );
+  }
+
+}
+
+
+/**
+ * Functional tests for editing roles.
+ */
+class RoleDelegationRoleEditingTestCase extends RoleDelegationTestCase {
+
+  /**
+   * Delete a role, then create a new one with the same name.
+   * Check that no users have permission to assign the new role.
+   */
+  public function testDeleteRole() {
+    $this->backdropPost("admin/config/people/roles/delete/{$this->rid_low}", NULL, t('Delete'));
+    $this->backdropPost('admin/config/people/roles/add', array('label' => 'Low', 'name' => 'low'), t('Save role'));
+    $this->backdropGet('admin/config/people/permissions');
+    $this->assertNoFieldChecked(
+      "edit-{$this->rid_high}-assign-low-role",
+      t('Permissions are updated when role is deleted.'),
+      t('Role Delegation')
+    );
+  }
+}

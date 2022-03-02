@@ -1,0 +1,17 @@
+[RoleDelegationPermissionsTestCase]
+name = Permissions
+description = Check that role assignment permissions are enforced.
+group = Role Delegation
+file = role_delegation.test
+
+[RoleDelegationOperationsTestCase]
+name = Operations
+description = Check that role assignment bulk operations are available and work as intended.
+group = Role Delegation
+file = role_delegation.test
+
+[RoleDelegationRoleEditingTestCase]
+name = Role Editing
+description = Check that role assignment permissions are updated correctly when roles are renamed or deleted.
+group = Role Delegation
+file = role_delegation.test
