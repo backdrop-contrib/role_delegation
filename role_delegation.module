@@ -279,7 +279,7 @@ function role_delegation_remove_role_action($account, &$context) {
 function role_delegation_user_role_delete($role) {
   // For all roles with the particular permission.
   $update_roles = user_roles(TRUE, 'assign ' . $role->name . ' role');
-  foreach ($update_roles as $update_role) {
+  foreach (array_keys($update_roles) as $update_role) {
     user_role_change_permissions($update_role, array('assign ' . $role->name . ' role' => FALSE));
   }
 }
