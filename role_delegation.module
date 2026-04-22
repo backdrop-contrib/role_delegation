@@ -27,6 +27,7 @@ function role_delegation_theme() {
  */
 function role_delegation_permission() {
   $roles = _role_delegation_roles();
+  $perms = array();
   foreach ($roles as $role_name => $role) {
     $perms["assign $role_name role"] = array(
       'title' => t('Assign @role role', array('@role' => $role)),
