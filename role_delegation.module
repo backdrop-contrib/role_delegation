@@ -80,10 +80,11 @@ function _role_delegation_add_roles_to_form(&$form, $account) {
     );
   }
 
+  $weight = $form['additional_settings']['account_settings']['#weight'] ?? 1;
   $form['roles_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Roles settings'),
-    '#weight' => 1,
+    '#weight' => $weight + .1,
     '#access' => $assign_role_delegation,
     '#collapsible' => TRUE,
     '#group' => 'additional_settings',
